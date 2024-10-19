@@ -1,34 +1,40 @@
 using UnityEngine;
 using System.Collections;
-using System.Numerics;
 
-public class cloudScript : MonoBehaviour
+public class CloudScript : MonoBehaviour
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    public Rigidbody2D player;
+    public BirdScript bird;
     public float bounciness = 10;
     public float moveSpeed = 1;
+    private Rigidbody2D playerRigidbody;
     void Start()
     {
+        if (bird != null)
+        {
+            playerRigidbody = bird.myRigidbody;
+        }
+        else
+        {
+            Debug.LogError("bird script is not set in the inspector");
+        }
 
     }
 
     void OnCollisionEnter2D(Collision2D collision)
     {
-        foreach (ContactPoint2D contact in collision.contacts)
+        if (collision.gameObject.GetComponent<BirdScript>() != null && playerRigidbody != null)
         {
-            Debug.DrawRay(contact.point, contact.normal, Color.white);
-        }
-
-        if (collision.relativeVelocity.magnitude > 2)
-        {
-            player.linearVelocityY += bounciness;
+            if (collision.relativeVelocity.magnitude > 2)
+            {
+                playerRigidbody.linearVelocity = new Vector2(playerRigidbody.linearVelocity.x, bounciness);
+            }
         }
     }
 
     // Update is called once per frame
     void Update()
     {
-        transform.position = transform.position + (UnityEngine.Vector3.up * moveSpeed) * Time.deltaTime;
+        transform.position += moveSpeed * Time.deltaTime * Vector3.up;
     }
 }

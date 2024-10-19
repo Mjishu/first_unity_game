@@ -1,8 +1,8 @@
 using UnityEngine;
 
-public class birdScript : MonoBehaviour
+public class BirdScript : MonoBehaviour
 {
-    public Rigidbody2D myRigidBody;
+    public Rigidbody2D myRigidbody;
     public float flapStrength = 10;
     public float movementSpeed = 10;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -16,16 +16,16 @@ public class birdScript : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            myRigidBody.linearVelocity = Vector2.up * flapStrength;
+            myRigidbody.linearVelocity = Vector2.up * flapStrength;
         }
 
-        if (Input.GetKeyDown(KeyCode.A))
+        if (Input.GetKey(KeyCode.A))
         {
-            myRigidBody.linearVelocityX -= movementSpeed;
+            myRigidbody.linearVelocity = new Vector2(-movementSpeed, myRigidbody.linearVelocity.y);
         }
-        else if (Input.GetKeyDown(KeyCode.D))
+        else if (Input.GetKey(KeyCode.D))
         {
-            myRigidBody.linearVelocityX += movementSpeed;
+            myRigidbody.linearVelocity = new Vector2(movementSpeed, myRigidbody.linearVelocity.y);
         }
 
     }

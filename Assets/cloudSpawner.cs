@@ -1,19 +1,17 @@
 using UnityEngine;
 
-public class cloudSpawner : MonoBehaviour
+public class CloudSpawner : MonoBehaviour
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    public GameObject cloud;
+    public GameObject cloudPrefab;
     public float spawnRate = 2;
     private float timer = 0;
+    public float horizontalOffset = 10;
+    public float deadzone = 10;
 
-    public void spawnClouds()
-    {
-        Instantiate(cloud, transform.position, transform.rotation);
-    }
     void Start()
     {
-        spawnClouds();
+        spawnCloud();
     }
 
 
@@ -26,8 +24,26 @@ public class cloudSpawner : MonoBehaviour
         }
         else
         {
-            spawnClouds();
+            spawnCloud();
             timer = 0;
+        }
+        if (transform.position.y > deadzone)
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    private void spawnCloud()
+    {
+        float lowestPoint = transform.position.x - horizontalOffset;
+        float highestPoint = transform.position.x + horizontalOffset;
+        if (cloudPrefab != null)
+        {
+            Instantiate(cloudPrefab, new Vector3(Random.Range(lowestPoint, highestPoint), transform.position.y, 0), transform.rotation);
+        }
+        else
+        {
+            Debug.LogError("Cloud prefab is not set in the inspector");
         }
     }
 }
