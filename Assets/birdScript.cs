@@ -1,19 +1,34 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 
 public class BirdScript : MonoBehaviour
 {
     public Rigidbody2D myRigidbody;
-    public float flapStrength = 10;
-    public float movementSpeed = 10;
+    public InputAction playerInput;
+    public LogicScript Logic;
+
+    public float flapStrength = 15;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     public float maxWidth = 15;
     public float minWidth = -15;
     public float deathZone = -9;
-    public GameManagerScript GameManager;
     private bool isDead = false;
+
+    Vector2 moveDirection = Vector2.zero;
+
+    private void OnEnable()
+    {
+        playerInput.Enable();
+    }
+    private void OnDisable()
+    {
+        playerInput.Disable();
+    }
+
     void Start()
     {
-
+        Logic = GameObject.FindGameObjectWithTag("Logic").GetComponent<LogicScript>();
     }
 
     void ScreenBounds()
@@ -36,7 +51,6 @@ public class BirdScript : MonoBehaviour
         Vector2 position = myRigidbody.position;
         if (position.y < deathZone && !isDead)
         {
-            GameManager.gameOver();
             Debug.Log("Game over");
             isDead = true;
         }
@@ -45,20 +59,21 @@ public class BirdScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (!isDead)
         {
-            myRigidbody.linearVelocity = Vector2.up * flapStrength;
+            moveDirection = playerInput.ReadValue<Vector2>();
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                myRigidbody.linearVelocity = new Vector2(moveDirection.x, moveDirection.y * flapStrength);
+            }
+            ScreenBounds();
+            GameOverLogic();
         }
+    }
 
-        if (Input.GetKey(KeyCode.A))
-        {
-            myRigidbody.linearVelocity = new Vector2(-movementSpeed, myRigidbody.linearVelocity.y);
-        }
-        else if (Input.GetKey(KeyCode.D))
-        {
-            myRigidbody.linearVelocity = new Vector2(movementSpeed, myRigidbody.linearVelocity.y);
-        }
-        ScreenBounds();
-        GameOverLogic();
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        Logic.GameOver();
+        isDead = true;
     }
 }
