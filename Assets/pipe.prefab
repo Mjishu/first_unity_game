@@ -226,6 +226,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Logic: {fileID: 0}
+  bird: {fileID: 0}
 --- !u!1 &8091747819633946874
 GameObject:
   m_ObjectHideFlags: 0
